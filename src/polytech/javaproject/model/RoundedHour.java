@@ -58,4 +58,18 @@ public class RoundedHour {
 		return time.toLocalTime();
 	}
 	
+	/**
+	 * Override of toString method
+	 */
+	@Override
+	public String toString() {
+		String hour = time.getHour()+":";
+		int minutes = time.getMinute();
+		if (minutes<10)
+			hour = hour+"0"+minutes;
+		else
+			hour = hour+minutes;
+		return hour;
+	}
+	
 }

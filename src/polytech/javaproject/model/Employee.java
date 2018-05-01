@@ -204,8 +204,15 @@ public class Employee {
 			}
 			workingDayList.add(currentDay);
 			currentDay = new WorkingDayHours(); //reset the current working day
-		}
-		
+		}	
+	}
+	
+	/**
+	 * Override of toString method
+	 */
+	@Override
+	public String toString() {
+		return firstName+" "+lastName;
 	}
 	
 }
