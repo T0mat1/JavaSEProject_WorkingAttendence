@@ -11,12 +11,12 @@ import polytech.javaproject.model.RoundedHour;
 
 public class RoundedHourTest {
 
-	private static final long QUARTERPASTEIGHT = 60*8+15;
+	private static final long QUARTER_PAST_EIGHT = 60*8+15;
 	
 	@Test
 	public void testRoundedHour() {
-		LocalDateTime expectedTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT.plusMinutes(QUARTERPASTEIGHT));
-		RoundedHour testedTime = new RoundedHour(LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT.plusMinutes(QUARTERPASTEIGHT+3)));
+		LocalDateTime expectedTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT.plusMinutes(QUARTER_PAST_EIGHT));
+		RoundedHour testedTime = new RoundedHour(LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT.plusMinutes(QUARTER_PAST_EIGHT+3)));
 		Assert.assertEquals(expectedTime, testedTime.getRoundedTime());
 	}
 

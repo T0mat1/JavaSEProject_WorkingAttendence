@@ -1,7 +1,9 @@
 package polytech.javaproject.timeclock.view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -10,18 +12,25 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import polytech.javaproject.model.Company;
+import polytech.javaproject.model.Department;
+import polytech.javaproject.model.Employee;
 
 public class ViewTimeclock extends JFrame {
 
-	private static final String WINDOWTITLE = "Time Clock Simulation V1.0";
-	private static final int WINDOWWIDTH = 400;
-	private static final int WINDOWHEIGHT  = 300;
-	private static final boolean WINDOWRESIZABLE = true;
-	private static final String PANELDEFAULTDATE = "JJ - MM - AAAA";
-	private static final String PANELDEFAULTTIME = "HH - MM - SS";
+	private static final String WINDOW_TITLE = "Time Clock Simulation V1.0";
+	private static final int WINDOW_WIDTH = 400;
+	private static final int WINDOW_HEIGHT  = 300;
+	private static final boolean WINDOW_RESIZABLE = true;
+	private static final int LAYOUT_ROWS = 4;
+	private static final int LAYOUT_COLUMNS = 1;
+	private static final int LAYOUT_GAP = 10;
+	private static final String LABEL_DEFAULT_DATE = "JJ - MM - AAAA";
+	private static final String LABEL_DEFAULT_TIME = "HH - MM - SS";
+	private static final String LABEL_EMPLOYEE = "Employee :";
+	private static final String LABEL_DEPARTMENT= "Department :";
 	
 	private Company model;
-	private JPanel panel;
+	private JPanel mainPanel;
 	private JLabel dateLabel;
 	private JLabel timeLabel;
 	private JLabel departmentLabel;
@@ -29,7 +38,7 @@ public class ViewTimeclock extends JFrame {
 	private JLabel roundedTimeLabel;
 	private JButton checkButton;
 	private JComboBox departmentComboBox;
-	private JComboBox employeeComboBox;
+	private JComboBox<Employee> employeeComboBox;
 	
 	public ViewTimeclock(Company newModel) {
 		//set up the model
@@ -39,31 +48,71 @@ public class ViewTimeclock extends JFrame {
 		//set up the layout
 		setLayout();
 		//add components to the panel
-		setPanel();
+		setMainPanel();
 	}
 	
 	private void build() {
-		setTitle(WINDOWTITLE);
-		setSize(WINDOWWIDTH, WINDOWHEIGHT);
-		setResizable(WINDOWRESIZABLE);
+		setTitle(WINDOW_TITLE);
+		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+		setResizable(WINDOW_RESIZABLE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
-		panel = new JPanel();
-		timeLabel = new JLabel(PANELDEFAULTTIME);
-		dateLabel = new JLabel(PANELDEFAULTDATE);
+		mainPanel = new JPanel();
 	}
 		
 	private void setLayout() {
 		GridLayout layout = new GridLayout();
-		
+		layout.setRows(LAYOUT_ROWS);
+		layout.setColumns(LAYOUT_COLUMNS); 
+		layout.setHgap(LAYOUT_GAP);
+		layout.setVgap(LAYOUT_GAP);
+		mainPanel.setLayout(layout);
 	}
 	
-	private void setPanel() {
-		panel.setBackground(Color.WHITE);
-		panel.add(dateLabel);
-		panel.add(timeLabel);
+	private void setMainPanel() {
+		mainPanel.setBackground(Color.WHITE);
 		
-		setContentPane(panel);
+		timeLabel = new JLabel(LABEL_DEFAULT_TIME);
+		timeLabel.setHorizontalAlignment(JLabel.CENTER);
+		timeLabel.setVerticalAlignment(JLabel.CENTER);
+		
+		dateLabel = new JLabel(LABEL_DEFAULT_DATE);
+		dateLabel.setHorizontalAlignment(JLabel.CENTER);
+		dateLabel.setVerticalAlignment(JLabel.CENTER);
+		
+		JPanel timePanel = new JPanel();
+		timePanel.setLayout(new GridLayout(2,1));
+		timePanel.setBackground(Color.WHITE);
+		timePanel.add(dateLabel);
+		timePanel.add(timeLabel);
+		
+		JPanel comboBoxPanel = new JPanel();
+		employeeLabel = new JLabel(LABEL_EMPLOYEE, JLabel.CENTER);
+		departmentLabel = new JLabel(LABEL_DEPARTMENT, JLabel.CENTER);
+		employeeComboBox = new JComboBox<Employee>(new Vector<Employee>(model.getEmployeeList()));
+		departmentComboBox = new JComboBox<Department>(new Vector<Department>(model.getDepartmentList()));
+		comboBoxPanel.setLayout(new GridLayout(2,2,5,5));
+		comboBoxPanel.setBackground(Color.WHITE);
+		comboBoxPanel.add(employeeLabel);
+		comboBoxPanel.add(employeeComboBox);
+		comboBoxPanel.add(departmentLabel);
+		comboBoxPanel.add(departmentComboBox);
+		
+		JPanel buttonPanel = new JPanel();
+		checkButton = new JButton("Check in/out");
+		buttonPanel.setLayout(new BorderLayout());
+		buttonPanel.setBackground(Color.WHITE);
+		buttonPanel.add(checkButton, BorderLayout.CENTER);
+		buttonPanel.add(new JLabel(" "), BorderLayout.EAST);
+		buttonPanel.add(new JLabel(" "), BorderLayout.WEST);
+		buttonPanel.add(new JLabel(" "), BorderLayout.NORTH);
+		//buttonPanel.add(new JLabel(" "), BorderLayout.SOUTH);
+		
+		mainPanel.add(timePanel);
+		mainPanel.add(comboBoxPanel);
+		mainPanel.add(buttonPanel);
+		
+		setContentPane(mainPanel);
 	}
 	
 	private Company setModel(Company newModel) {
