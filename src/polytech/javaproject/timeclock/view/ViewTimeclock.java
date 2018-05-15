@@ -51,6 +51,10 @@ public class ViewTimeclock extends JFrame {
 		setMainPanel();
 	}
 	
+	public void update() {
+		//TODO: Update view here
+	}
+	
 	private void build() {
 		setTitle(WINDOW_TITLE);
 		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
