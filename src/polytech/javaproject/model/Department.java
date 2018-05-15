@@ -35,6 +35,7 @@ public class Department {
 	 * Constructor which instantiate an new Department, sets the name with new name,
 	 * instantiate the employee list and sets the manager with null
 	 * @param newName a String containing the name of the department
+	 * @param object 
 	 */
 	public Department(String newName) {
 		name = newName;
@@ -115,7 +116,7 @@ public class Department {
 		if (employee.getId() == manager.getId())
 			throw new IllegalArgumentException("Cannot remove the current manager");
 		else
-			employeeList.remove(employee); //WIP DOES NOT WORK AT ALL 
+			employeeList.remove(employee); 
 	}
 	
 	/**
@@ -127,5 +128,13 @@ public class Department {
 	public boolean containsEmployee(Employee employee) {
 		return employeeList.contains(employee);
 	}
-
+	
+	/**
+	 * Override of toString method
+	 */
+	@Override
+	public String toString() {
+		return name;
+	}
+	
 }

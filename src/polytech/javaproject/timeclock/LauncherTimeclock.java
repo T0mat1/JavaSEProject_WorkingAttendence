@@ -41,7 +41,8 @@ public class LauncherTimeclock {
 					new RoundedHour(LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 30))), 
 					new RoundedHour(LocalDateTime.of(LocalDate.now(), LocalTime.of(18, 45))));
 		
-		//TODO: Add creation of departments
+		for (int i=0 ; i<3 ; i++)
+			company.createDepartment("Department n°"+i, company.getManagerList().get(i));
 		
 		return company;
 	}

@@ -37,7 +37,7 @@ public class ViewTimeclock extends JFrame {
 	private JLabel employeeLabel;
 	private JLabel roundedTimeLabel;
 	private JButton checkButton;
-	private JComboBox departmentComboBox;
+	private JComboBox<Department> departmentComboBox;
 	private JComboBox<Employee> employeeComboBox;
 	
 	public ViewTimeclock(Company newModel) {
@@ -95,12 +95,13 @@ public class ViewTimeclock extends JFrame {
 		departmentLabel = new JLabel(LABEL_DEPARTMENT, JLabel.CENTER);
 		employeeComboBox = new JComboBox<Employee>(new Vector<Employee>(model.getEmployeeList()));
 		departmentComboBox = new JComboBox<Department>(new Vector<Department>(model.getDepartmentList()));
+		departmentComboBox.addItem(new Department("All")); //Je sais c'est de la triche
 		comboBoxPanel.setLayout(new GridLayout(2,2,5,5));
 		comboBoxPanel.setBackground(Color.WHITE);
-		comboBoxPanel.add(employeeLabel);
-		comboBoxPanel.add(employeeComboBox);
 		comboBoxPanel.add(departmentLabel);
 		comboBoxPanel.add(departmentComboBox);
+		comboBoxPanel.add(employeeLabel);
+		comboBoxPanel.add(employeeComboBox);
 		
 		JPanel buttonPanel = new JPanel();
 		checkButton = new JButton("Check in/out");
