@@ -4,8 +4,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import javax.swing.SwingUtilities;
+
 import polytech.javaproject.model.Company;
 import polytech.javaproject.model.RoundedHour;
+import polytech.javaproject.timeclock.controller.ControllerTimeclock;
 import polytech.javaproject.timeclock.view.ViewTimeclock;
 
 
@@ -20,12 +23,20 @@ public class LauncherTimeclock {
 		Company model = createTestCompany();
 		
 		//init view
-		ViewTimeclock view = new ViewTimeclock(model);
+		//ViewTimeclock view = new ViewTimeclock(model);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				ViewTimeclock view = new ViewTimeclock(model);
+				//view.setVisible(true);
+			};
+		});
 		
 		//init controller
+		//ControllerTimeclock controller = new ControllerTimeclock(model, view);
 		
 		//print the view on user's screen
-		view.setVisible(true);
+		//view.setVisible(true);
 	}
 	
 	public static Company createTestCompany() {
