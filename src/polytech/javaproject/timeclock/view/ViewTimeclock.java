@@ -39,13 +39,16 @@ public class ViewTimeclock extends JFrame {
 	private static final String LABEL_DEFAULT_TIME = "HH - MM - SS";
 	private static final String LABEL_EMPLOYEE = "Employee :";
 	private static final String LABEL_DEPARTMENT= "Department :";
-	private static final String LABEL_FONT_NAME = "Arial";
+	private static final String LABEL_FONT_NAME = "Dialog";
 	private static final int LABEL_DATE_FONT_STYLE = Font.PLAIN;
 	private static final int LABEL_DATE_FONT_SIZE = 12;	
 	private static final int LABEL_TIME_FONT_STYLE = Font.BOLD;
 	private static final int LABEL_TIME_FONT_SIZE = 14;
-	private static final int TIMER_DELAY = 500;
 	
+	public void setCurrentEmployeeList(ArrayList<Employee> currentEmployeeList) {
+		this.currentEmployeeList = currentEmployeeList;
+	}
+
 	private Company model;
 	private ArrayList<Employee> currentEmployeeList;
 	
@@ -58,16 +61,8 @@ public class ViewTimeclock extends JFrame {
 	private JButton checkButton;
 	private JComboBox<Department> departmentComboBox;
 	private JComboBox<Employee> employeeComboBox;
-	private Timer timer;
-	
-	private ActionListener departmentActionListener;
-	private ActionListener checkingActionListener;
-	private ActionListener timerActionListener;
 	
 	public ViewTimeclock(Company newModel) {
-		setActionListeners();
-		//start the timer to print the hour and the date
-		startTimer();
 		//set up the model
 		model = setModel(newModel);
 		//create new window
@@ -132,7 +127,6 @@ public class ViewTimeclock extends JFrame {
 		departmentComboBox = new JComboBox<Department>(new Vector<Department>(model.getDepartmentList()));
 		departmentComboBox.addItem(new Department("All")); //TODO Trouver une meilleure solution
 		departmentComboBox.setSelectedIndex(model.getDepartmentList().size());;
-		departmentComboBox.addActionListener(departmentActionListener);
 		employeePanel.setLayout(new GridLayout(2,2,5,5));
 		employeePanel.setBackground(Color.WHITE);
 		employeePanel.add(departmentLabel);
@@ -142,7 +136,6 @@ public class ViewTimeclock extends JFrame {
 		
 		JPanel checkingPanel = new JPanel();
 		checkButton = new JButton("Check in/out");
-		checkButton.addActionListener(checkingActionListener);
 		checkingPanel.setLayout(new BorderLayout());
 		checkingPanel.setBackground(Color.WHITE);
 		checkingPanel.add(checkButton, BorderLayout.CENTER);
@@ -162,45 +155,47 @@ public class ViewTimeclock extends JFrame {
 				
 		setContentPane(mainPanel);
 	}
-	
-	private void startTimer() {
-		timer = new Timer(TIMER_DELAY, timerActionListener);
-		timer.setInitialDelay(0);
-		timer.start();
+			
+	public ArrayList<Employee> getCurrentEmployeeList() {
+		return currentEmployeeList;
+	}
+
+	public JLabel getDateLabel() {
+		return dateLabel;
 	}
 	
-	private void setActionListeners() {
-		departmentActionListener = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Department selectedDepartment = (Department) departmentComboBox.getSelectedItem();
-				
-				if (selectedDepartment.toString() == "All")
-					currentEmployeeList = model.getEmployeeList();
-				else
-					currentEmployeeList = selectedDepartment.getEmployeeList();
-				employeeComboBox.setModel(new DefaultComboBoxModel(currentEmployeeList.toArray()));
-			}
-		};
-		
-		checkingActionListener = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.out.println(employeeComboBox.getSelectedItem()+" checks for "+new RoundedHour(LocalDateTime.of(LocalDate.now(), LocalTime.now())).toString());
-			}
-		};
-		
-		timerActionListener = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				dateLabel.setText(LocalDate.now().toString());
-				timeLabel.setText(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
-				roundedTimeLabel.setText("Checking for "+new RoundedHour(LocalDateTime.of(LocalDate.now(), LocalTime.now())).toString());
-			}
-		};
-		
+	public void setDateLabelText(String date) {
+		dateLabel.setText(date);
+	}
+
+	public JLabel getTimeLabel() {
+		return timeLabel;
 	}
 	
+	public void setTimeLabelText(String time) {
+		timeLabel.setText(time);
+	}
+
+	public JLabel getRoundedTimeLabel() {
+		return roundedTimeLabel;
+	}
+	
+	public void setRoundedTimeLabel(String roundedTime) {
+		roundedTimeLabel.setText(roundedTime);
+	}
+
+	public JComboBox<Department> getDepartmentComboBox() {
+		return departmentComboBox;
+	}
+
+	public JComboBox<Employee> getEmployeeComboBox() {
+		return employeeComboBox;
+	}
+	
+	public JButton getCheckButton() {
+		return checkButton;
+	}
+
 	private Company setModel(Company newModel) {
 		return newModel;		
 	}

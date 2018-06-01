@@ -4,13 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import javax.swing.SwingUtilities;
-
 import polytech.javaproject.model.Company;
 import polytech.javaproject.model.RoundedHour;
 import polytech.javaproject.timeclock.controller.ControllerTimeclock;
 import polytech.javaproject.timeclock.view.ViewTimeclock;
-
 
 public class LauncherTimeclock {
 
@@ -18,27 +15,31 @@ public class LauncherTimeclock {
 
 	public static void main(String[] args) {
 		
-		//init model
-		//Company model = new Company(NAME_COMPANY);
-		Company model = createTestCompany();
+		Company model;
+		ViewTimeclock view;
+		ControllerTimeclock controller;
 		
-		//init view
-		//ViewTimeclock view = new ViewTimeclock(model);
+		
+		//initiate model
+		model = createTestCompany();
+		view = new ViewTimeclock(model);
+		
+		/*
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				ViewTimeclock view = new ViewTimeclock(model);
+				view = new ViewTimeclock(model);
 				//view.setVisible(true);
 			};
 		});
+		//*/
+				
+		//launch controller
+		controller = new ControllerTimeclock(view, model);
 		
-		//init controller
-		//ControllerTimeclock controller = new ControllerTimeclock(model, view);
-		
-		//print the view on user's screen
-		//view.setVisible(true);
 	}
 	
+	//==================== Stub method =========================
 	public static Company createTestCompany() {
 		Company company = new Company("CompanyTest");
 		
@@ -57,5 +58,4 @@ public class LauncherTimeclock {
 		
 		return company;
 	}
-	
 }
