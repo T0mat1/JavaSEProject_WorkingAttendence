@@ -4,6 +4,8 @@ import java.time.Duration;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.lang.IllegalArgumentException;
+ 
 
 /**
  * Employee is a class representing an Employee of the company

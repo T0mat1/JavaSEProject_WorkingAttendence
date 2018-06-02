@@ -6,7 +6,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -28,9 +31,16 @@ public class ViewMainApp extends JFrame {
 	private static final String FONT_NAME = "Dialog";
 	private static final int FONT_STYLE = Font.BOLD;
 	private static final int FONT_SIZE = 15;
+	private static final String[] HEADER_LIST_STRING = {"Employee First Name",
+														"Employee Last Name",
+														"arrived at",
+														"leaved at",
+														"Department",
+														"Date"};
 	private static final String LABEL_INCIDENT_OF_SCORES = "Incident of scores :";
 	private static final String LABEL_SHOW_ARRIVALS = "Show late arrivals";
 	private static final String LABEL_SHOW_LEAVINGS = "Show early leavings";
+	private static final String LABEL_TCP_CONNECTION = "TCP Connection :";
 	private static final String LABEL_IP_ADRESS = "IP Address :";
 	private static final String LABEL_PORT = "Port :";
 	
@@ -38,6 +48,7 @@ public class ViewMainApp extends JFrame {
 	
 	private JPanel mainPanel;
 	private JTabbedPane tabbedPane;
+	private JButton createEmployeeButton;
 	private JPanel checkingPanel;
 	private JPanel employeePanel;
 	private JPanel departmentPanel;
@@ -99,23 +110,30 @@ public class ViewMainApp extends JFrame {
 		
 		//TODO Add components to checkingPanel
 		checkingPanel = new JPanel();
+		checkingPanel.setLayout(new BorderLayout());
 		
-		 Object[][] donnees = {
-	               {"Johnathan", "Sykes", Color.red, true, "TENNIS"},
-	               {"Nicolas", "Van de Kampf", Color.black, true, "FOOTBALL"},
-	               {"Damien", "Cuthbert", Color.cyan, true, "RIEN"},
-	               {"Corinne", "Valance", Color.blue, false, "NATATION"},
-	               {"Emilie", "Schrödinger", Color.magenta, false, "FOOTBALL"},
-	               {"Delphine", "Duke", Color.yellow, false, "TENNIS"},
-	               {"Eric", "Trump", Color.pink, true, "FOOTBALL"},
+		String[] header = HEADER_LIST_STRING;
+		
+		Object[][] donnees = {
+	              {"Johnathan", "Sykes", LocalTime.now(), LocalTime.now(), "TENNIS", LocalDate.now()},
+	              {"Nicolas", "Van de Kampf", LocalTime.now(), LocalTime.now(), "FOOTBALL", LocalDate.now()},
+	              {"Damien", "Cuthbert", LocalTime.now(), LocalTime.now(), "RIEN" , LocalDate.now()},
+	              {"Corinne", "Valance", LocalTime.now(), LocalTime.now(), "NATATION" , LocalDate.now()},
+	              {"Emilie", "Schrödinger", LocalTime.now(), LocalTime.now(), "FOOTBALL" , LocalDate.now()},
+	              {"Delphine", "Duke", LocalTime.now(), LocalTime.now(), "TENNIS", LocalDate.now()},
+	              {"Eric", "Trump", LocalTime.now(), LocalTime.now(), "FOOTBALL" , LocalDate.now()},
 	    };
 	 
-	    String[] entetes = {"Prénom", "Nom", "Couleur favorite", "Homme", "Sport"};
-	    
-	    JScrollPane scrollPane = new JScrollPane();
-	    JTable tableau = new JTable(donnees, entetes);
+	    JTable tableau = new JTable(donnees, header);
+	    JScrollPane scrollPane = new JScrollPane(tableau, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		
-		checkingPanel.add(tableau);
+	    createEmployeeButton = new JButton("Create new employee");
+	    
+	    checkingPanel.add(createEmployeeButton, BorderLayout.EAST);
+	    checkingPanel.add(new JLabel(" WIP "), BorderLayout.WEST);
+		checkingPanel.add(new JLabel(" WIP "), BorderLayout.NORTH);
+		checkingPanel.add(new JLabel(" WIP "), BorderLayout.SOUTH);
+		checkingPanel.add(scrollPane, BorderLayout.CENTER);
 		
 	}
 	
@@ -138,10 +156,11 @@ public class ViewMainApp extends JFrame {
 		configurationPanel.add(new JLabel("   "), BorderLayout.SOUTH);
 		
 		JPanel secondaryPanel = new JPanel();
-		secondaryPanel.setLayout(new GridLayout(4,4,10,10));
+		secondaryPanel.setLayout(new GridLayout(3,4,10,10));
 		
+		// ================ incident of scores panel ====================
 		JPanel incidentsOfScoresPanel = new JPanel();
-		incidentsOfScoresPanel.setLayout(new GridLayout(3,0,10,10));
+		incidentsOfScoresPanel.setLayout(new GridLayout(4,0,10,10));
 		JLabel checkingsLabel = new JLabel(LABEL_INCIDENT_OF_SCORES);
 		checkingsLabel.setFont(new Font(FONT_NAME, FONT_STYLE, FONT_SIZE));
 		incidentsOfScoresPanel.add(checkingsLabel);
@@ -151,9 +170,14 @@ public class ViewMainApp extends JFrame {
 		JCheckBox earlyLeaving = new JCheckBox(LABEL_SHOW_LEAVINGS);
 		earlyLeaving.setFont(new Font(FONT_NAME, FONT_STYLE, FONT_SIZE));
 		incidentsOfScoresPanel.add(earlyLeaving);
+		incidentsOfScoresPanel.add(new JLabel(" "));
 		
+		// ================ TCP connection panel ====================
 		JPanel TCPConnexionPanel = new JPanel();
-		TCPConnexionPanel.setLayout(new GridLayout(4,1,10,10));
+		TCPConnexionPanel.setLayout(new GridLayout(6,1,10,10));
+		JLabel TCPLabel = new JLabel(LABEL_TCP_CONNECTION);
+		TCPLabel.setFont(new Font(FONT_NAME, FONT_STYLE, FONT_SIZE));
+		TCPConnexionPanel.add(TCPLabel);
 		JLabel IPAdressLabel = new JLabel(LABEL_IP_ADRESS);
 		TCPConnexionPanel.add(IPAdressLabel);
 		IPAdressTextField = new JTextField();
@@ -162,15 +186,29 @@ public class ViewMainApp extends JFrame {
 		TCPConnexionPanel.add(PortLabel);
 		PortTextField = new JTextField();
 		TCPConnexionPanel.add(PortTextField);
+		//TODO Add radio buttons
+		//TODO Format text field
 		
+		// ================ add gaps =====================
 		secondaryPanel.add(incidentsOfScoresPanel);
+		for (int i=0 ; i<5 ; i++)
+			secondaryPanel.add(new JLabel(" "));
+		
 		secondaryPanel.add(TCPConnexionPanel);
+		
+		for (int i=0 ; i<10 ; i++)
+			secondaryPanel.add(new JLabel(" "));
+		
 		configurationPanel.add(secondaryPanel);
 		
-		//TODO Add TCP components (texts inputs)
+		//TODO Add export CSV export/import buttons
 		
 	}
 	
+	public JButton getCreateEmployeeButton() {
+		return createEmployeeButton;
+	}
+
 	//*
 	//TODO : Delete temporary method
 	private JComponent makeTextPanel(String text) {
