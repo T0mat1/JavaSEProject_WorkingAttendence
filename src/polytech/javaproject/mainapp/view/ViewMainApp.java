@@ -9,12 +9,13 @@ import java.awt.event.KeyEvent;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -43,18 +44,45 @@ public class ViewMainApp extends JFrame {
 	private static final String LABEL_TCP_CONNECTION = "TCP Connection :";
 	private static final String LABEL_IP_ADRESS = "IP Address :";
 	private static final String LABEL_PORT = "Port :";
+	private static final String LABEL_CSV = "Save employee list :";
+	private static final String BUTTON_TEXT_CREATE_EMPLOYEE = "Create new employee";
+	private static final String BUTTON_TEXT_MODIFY_EMPLOYEE = "Modify employee";
+	private static final String BUTTON_TEXT_DELETE_EMPLOYEE = "Delete employee";
+	private static final String BUTTON_TEXT_CREATE_DEPARTMENT = "Create new Department";
+	private static final String BUTTON_TEXT_MODIFY_DEPARTMENT = "Modify department";
+	private static final String BUTTON_TEXT_DELETE_DEPARTMENT = "Delete Department";
+	private static final String BUTTON_TEXT_CSV_IMPORT = "Import CSV";
+	private static final String BUTTON_TEXT_CSV_EXPORT = "Export CSV";
+	private static final String RADIO_TEXT_IPV4 = "IPV4";
+	private static final String RADIO_TEXT_IPV6 = "IPV6";
 	
 	private Company model;
 	
 	private JPanel mainPanel;
 	private JTabbedPane tabbedPane;
-	private JButton createEmployeeButton;
 	private JPanel checkingPanel;
 	private JPanel employeePanel;
 	private JPanel departmentPanel;
 	private JPanel configurationPanel;
+	// ======= checking panel =========
+	private Object[][] checkingData;
+	private DateTextField sortFromDateTextField;
+	private DateTextField sortToDateTextField;
+	// ======= employee panel =========
+	private JButton newEmployeeButton;
+	private JButton modifyEmployeeButton;
+	private JButton deleteEmployeeButton;
+	// ======= department panel =======
+	private JButton newDepartmentButton;
+	private JButton modifyDepartmentButton;
+	private JButton deleteDepartmentButton;
+	// ======= configuration panel ========
 	private JTextField IPAdressTextField;
 	private JTextField PortTextField;
+	private JButton CSVExportButton;
+	private JButton CSVImportButton;
+	private JRadioButton IPV4RadioButton;
+	private JRadioButton IPV6RadioButton;
 	
 	public ViewMainApp(Company company) {
 		//import model
@@ -63,7 +91,6 @@ public class ViewMainApp extends JFrame {
 		mainPanel = new JPanel();
 		build();
 		setMainPanel();
-		//System.out.println(javax.swing.UIManager.getDefaults().getFont("Label.font"));
 	}
 	
 	private void build() {
@@ -86,13 +113,13 @@ public class ViewMainApp extends JFrame {
 		tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
 
 		//2nd tab
-		JComponent panel2 = makeTextPanel("Panel #2");
-		tabbedPane.addTab("Tab 2", panel2);
+		createEmployeePanel();
+		tabbedPane.addTab("Employee Management", employeePanel);
 		tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
 
 		//3rd tab
-		JComponent panel3 = makeTextPanel("Panel #3");
-		tabbedPane.addTab("Tab 3", panel3);
+		createDepartmentPanel();
+		tabbedPane.addTab("Department Managment", departmentPanel);
 		tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
 
 		//4th tab
@@ -114,7 +141,7 @@ public class ViewMainApp extends JFrame {
 		
 		String[] header = HEADER_LIST_STRING;
 		
-		Object[][] donnees = {
+		Object[][] tmpCheckingData = { 
 	              {"Johnathan", "Sykes", LocalTime.now(), LocalTime.now(), "TENNIS", LocalDate.now()},
 	              {"Nicolas", "Van de Kampf", LocalTime.now(), LocalTime.now(), "FOOTBALL", LocalDate.now()},
 	              {"Damien", "Cuthbert", LocalTime.now(), LocalTime.now(), "RIEN" , LocalDate.now()},
@@ -124,25 +151,70 @@ public class ViewMainApp extends JFrame {
 	              {"Eric", "Trump", LocalTime.now(), LocalTime.now(), "FOOTBALL" , LocalDate.now()},
 	    };
 	 
-	    JTable tableau = new JTable(donnees, header);
-	    JScrollPane scrollPane = new JScrollPane(tableau, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	    JTable checkingTable = new JTable(tmpCheckingData, header);
+	    JScrollPane scrollPane = new JScrollPane(checkingTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		
-	    createEmployeeButton = new JButton("Create new employee");
+	    JPanel sortByDatePanel = new JPanel();
+	    sortByDatePanel.setLayout(new GridLayout(2,4,10,10));
+	    sortFromDateTextField = new DateTextField();
+	    sortToDateTextField = new DateTextField();
+	    sortByDatePanel.add(new JLabel(" "));
+	    sortByDatePanel.add(new JLabel("From :"));
+	    sortByDatePanel.add(new JLabel("To :"));
+	    sortByDatePanel.add(new JLabel(" "));
+	    sortByDatePanel.add(new JLabel(" "));
+	    sortByDatePanel.add(sortFromDateTextField);
+	    sortByDatePanel.add(sortToDateTextField);
+	    sortByDatePanel.add(new JLabel(" "));
+	    System.out.println(sortFromDateTextField.getDate());
 	    
-	    checkingPanel.add(createEmployeeButton, BorderLayout.EAST);
-	    checkingPanel.add(new JLabel(" WIP "), BorderLayout.WEST);
-		checkingPanel.add(new JLabel(" WIP "), BorderLayout.NORTH);
-		checkingPanel.add(new JLabel(" WIP "), BorderLayout.SOUTH);
+	    checkingPanel.add(new JLabel("   "), BorderLayout.EAST);
+	    checkingPanel.add(new JLabel("   "), BorderLayout.WEST);
+		checkingPanel.add(new JLabel("   "), BorderLayout.NORTH);
+		checkingPanel.add(sortByDatePanel, BorderLayout.SOUTH);
 		checkingPanel.add(scrollPane, BorderLayout.CENTER);
 		
 	}
 	
 	private void createEmployeePanel() {
 		//TODO employeePanel
+		employeePanel = new JPanel();
+		employeePanel.setLayout(new BorderLayout());
+		JPanel employeeButtonsPanel = new JPanel();
+		employeeButtonsPanel.setLayout(new GridLayout(5,1,10,10));
+		
+		newEmployeeButton = new JButton(BUTTON_TEXT_CREATE_EMPLOYEE);
+		modifyEmployeeButton = new JButton(BUTTON_TEXT_MODIFY_EMPLOYEE);
+		deleteEmployeeButton = new JButton(BUTTON_TEXT_DELETE_EMPLOYEE);
+		
+		employeeButtonsPanel.add(new JLabel(" "));
+		employeeButtonsPanel.add(newEmployeeButton);
+		employeeButtonsPanel.add(modifyEmployeeButton);
+		employeeButtonsPanel.add(deleteEmployeeButton);
+		employeeButtonsPanel.add(new JLabel(""));
+		
+	    employeePanel.add(employeeButtonsPanel, BorderLayout.EAST);
 	}
 	
 	private void createDepartmentPanel() {
 		//TODO departmentPanel
+		departmentPanel = new JPanel();
+		departmentPanel.setLayout(new BorderLayout());
+		JPanel departmentButtonsPanel = new JPanel();
+		departmentButtonsPanel.setLayout(new GridLayout(5,1,10,10));
+		
+		newDepartmentButton = new JButton(BUTTON_TEXT_CREATE_DEPARTMENT);
+		modifyDepartmentButton = new JButton(BUTTON_TEXT_MODIFY_DEPARTMENT);
+		deleteDepartmentButton = new JButton(BUTTON_TEXT_DELETE_DEPARTMENT);
+
+		departmentButtonsPanel.add(new JLabel(""));
+		departmentButtonsPanel.add(newDepartmentButton);
+		departmentButtonsPanel.add(modifyDepartmentButton);
+		departmentButtonsPanel.add(deleteDepartmentButton);
+		departmentButtonsPanel.add(new JLabel(""));
+		
+		departmentPanel.add(departmentButtonsPanel, BorderLayout.EAST);
+		
 	}
 	
 	private void createConfigurationPanel() {
@@ -186,38 +258,84 @@ public class ViewMainApp extends JFrame {
 		TCPConnexionPanel.add(PortLabel);
 		PortTextField = new JTextField();
 		TCPConnexionPanel.add(PortTextField);
-		//TODO Add radio buttons
+		ButtonGroup IPGroup = new ButtonGroup();
+		IPV4RadioButton = new JRadioButton(RADIO_TEXT_IPV4);
+		IPV4RadioButton.setSelected(true);
+		IPV6RadioButton = new JRadioButton(RADIO_TEXT_IPV6);
+		IPGroup.add(IPV4RadioButton);
+		IPGroup.add(IPV6RadioButton);
+		JPanel IPPanel = new JPanel();
+		IPPanel.add(IPV4RadioButton);
+		IPPanel.add(IPV6RadioButton);
+		TCPConnexionPanel.add(IPPanel);
 		//TODO Format text field
 		
-		// ================ add gaps =====================
+		// ================ CSV management ===================
+		JPanel CSVPanel = new JPanel();
+		CSVPanel.setLayout(new GridLayout(3,1,10,10));
+		CSVExportButton = new JButton(BUTTON_TEXT_CSV_EXPORT);
+		CSVImportButton = new JButton(BUTTON_TEXT_CSV_IMPORT);
+		JLabel CSVLabel = new JLabel(LABEL_CSV);
+		CSVLabel.setFont(new Font(FONT_NAME, FONT_STYLE, FONT_SIZE));
+		CSVPanel.add(CSVLabel);
+		CSVPanel.add(CSVExportButton);
+		CSVPanel.add(CSVImportButton);
+		
+		// ============ add panels and gaps =============
 		secondaryPanel.add(incidentsOfScoresPanel);
 		for (int i=0 ; i<5 ; i++)
 			secondaryPanel.add(new JLabel(" "));
 		
-		secondaryPanel.add(TCPConnexionPanel);
-		
-		for (int i=0 ; i<10 ; i++)
+		secondaryPanel.add(TCPConnexionPanel);		
+		for (int i=0 ; i<5 ; i++)
+			secondaryPanel.add(new JLabel(" "));
+
+		secondaryPanel.add(CSVPanel);
+		for (int i=0 ; i<5 ; i++)
 			secondaryPanel.add(new JLabel(" "));
 		
 		configurationPanel.add(secondaryPanel);
 		
-		//TODO Add export CSV export/import buttons
-		
 	}
 	
-	public JButton getCreateEmployeeButton() {
-		return createEmployeeButton;
+	public JButton getNewEmployeeButton() {
+		return newEmployeeButton;
 	}
 
-	//*
-	//TODO : Delete temporary method
-	private JComponent makeTextPanel(String text) {
-	    JPanel panel = new JPanel(false);
-	    JTextField filler = new JTextField(text);
-	    filler.setHorizontalAlignment(JLabel.CENTER);
-	    panel.setLayout(new GridLayout(1, 1));
-	    panel.add(filler);
-	    return panel;
+	public JButton getModifyEmployeeButton() {
+		return modifyEmployeeButton;
 	}
-	//*/
+
+	public JButton getDeleteEmployeeButton() {
+		return deleteEmployeeButton;
+	}
+
+	public JButton getNewDepartmentButton() {
+		return newDepartmentButton;
+	}
+
+	public JButton getModifyDepartmentButton() {
+		return modifyDepartmentButton;
+	}
+
+	public JButton getDeleteDepartmentButton() {
+		return deleteDepartmentButton;
+	}
+
+	public JButton getCSVExportButton() {
+		return CSVExportButton;
+	}
+
+	public JButton getCSVInportButton() {
+		return CSVImportButton;
+	}
+
+	public JRadioButton getIPV4RadioButton() {
+		return IPV4RadioButton;
+	}
+
+	public JRadioButton getIPV6RadioButton() {
+		return IPV6RadioButton;
+	}
+
 }

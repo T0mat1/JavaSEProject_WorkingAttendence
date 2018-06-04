@@ -30,7 +30,7 @@ public class ControllerMainApp {
 			}
 		};
 		
-		view.getCreateEmployeeButton().addActionListener(createEmployeeActionListener);
+		view.getNewEmployeeButton().addActionListener(createEmployeeActionListener);
 		
 		//print the view on user's screen
 		view.setVisible(true);
