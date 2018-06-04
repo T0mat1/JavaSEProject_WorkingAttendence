@@ -8,10 +8,12 @@ import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Vector;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,6 +24,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import polytech.javaproject.model.Company;
+import polytech.javaproject.model.Department;
 
 public class ViewMainApp extends JFrame {
 
@@ -32,12 +35,14 @@ public class ViewMainApp extends JFrame {
 	private static final String FONT_NAME = "Dialog";
 	private static final int FONT_STYLE = Font.BOLD;
 	private static final int FONT_SIZE = 15;
-	private static final String[] HEADER_LIST_STRING = {"Employee First Name",
+	private static final String[] HEADER_CHECKINGS_LIST_STRING = {"Employee First Name",
 														"Employee Last Name",
 														"arrived at",
 														"leaved at",
 														"Department",
 														"Date"};
+	private static final String[] HEADER_DEPARTMENT_LIST_STRING = {"Department", "Manager", "Nb Employees"};
+	private static final String[] HEADER_EMPLOYEE_LIST_STRING = {"Employee First Name", "Employee Last Name", "Department", "Overtime"};
 	private static final String LABEL_INCIDENT_OF_SCORES = "Incident of scores :";
 	private static final String LABEL_SHOW_ARRIVALS = "Show late arrivals";
 	private static final String LABEL_SHOW_LEAVINGS = "Show early leavings";
@@ -66,6 +71,7 @@ public class ViewMainApp extends JFrame {
 	private JPanel configurationPanel;
 	// ======= checking panel =========
 	private Object[][] checkingData;
+	private JComboBox sortByDepartmentComboBox;
 	private DateTextField sortFromDateTextField;
 	private DateTextField sortToDateTextField;
 	// ======= employee panel =========
@@ -139,7 +145,7 @@ public class ViewMainApp extends JFrame {
 		checkingPanel = new JPanel();
 		checkingPanel.setLayout(new BorderLayout());
 		
-		String[] header = HEADER_LIST_STRING;
+		String[] header = HEADER_CHECKINGS_LIST_STRING;
 		
 		Object[][] tmpCheckingData = { 
 	              {"Johnathan", "Sykes", LocalTime.now(), LocalTime.now(), "TENNIS", LocalDate.now()},
@@ -155,17 +161,21 @@ public class ViewMainApp extends JFrame {
 	    JScrollPane scrollPane = new JScrollPane(checkingTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		
 	    JPanel sortByDatePanel = new JPanel();
-	    sortByDatePanel.setLayout(new GridLayout(2,4,10,10));
+	    sortByDatePanel.setLayout(new GridLayout(3,5,10,10));
 	    sortFromDateTextField = new DateTextField();
 	    sortToDateTextField = new DateTextField();
+	    sortByDepartmentComboBox = new JComboBox<Department>(new Vector<Department>(model.getDepartmentList()));
 	    sortByDatePanel.add(new JLabel(" "));
+	    sortByDatePanel.add(new JLabel("Department :"));
 	    sortByDatePanel.add(new JLabel("From :"));
 	    sortByDatePanel.add(new JLabel("To :"));
-	    sortByDatePanel.add(new JLabel(" "));
-	    sortByDatePanel.add(new JLabel(" "));
+	    for (int i=0 ; i<2 ; i++)
+	    	sortByDatePanel.add(new JLabel(" "));
+	    sortByDatePanel.add(sortByDepartmentComboBox);
 	    sortByDatePanel.add(sortFromDateTextField);
 	    sortByDatePanel.add(sortToDateTextField);
-	    sortByDatePanel.add(new JLabel(" "));
+	    for (int i=0 ; i<5 ; i++)
+	    	sortByDatePanel.add(new JLabel(" "));
 	    System.out.println(sortFromDateTextField.getDate());
 	    
 	    checkingPanel.add(new JLabel("   "), BorderLayout.EAST);
@@ -336,6 +346,14 @@ public class ViewMainApp extends JFrame {
 
 	public JRadioButton getIPV6RadioButton() {
 		return IPV6RadioButton;
+	}
+
+	public DateTextField getSortFromDateTextField() {
+		return sortFromDateTextField;
+	}
+
+	public DateTextField getSortToDateTextField() {
+		return sortToDateTextField;
 	}
 
 }

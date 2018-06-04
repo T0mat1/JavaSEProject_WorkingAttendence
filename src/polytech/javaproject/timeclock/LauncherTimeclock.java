@@ -17,8 +17,7 @@ public class LauncherTimeclock {
 		
 		Company model;
 		ViewTimeclock view;
-		ControllerTimeclock controller;
-		
+		ControllerTimeclock controller;		
 		
 		//initiate model
 		model = createTestCompany();

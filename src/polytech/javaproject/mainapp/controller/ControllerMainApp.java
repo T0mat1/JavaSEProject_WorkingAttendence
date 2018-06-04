@@ -15,6 +15,7 @@ public class ControllerMainApp {
 	private ViewMainApp view;
 
 	private ActionListener createEmployeeActionListener;
+	private ActionListener sortByDateActionListener;
 	
 	public ControllerMainApp(ViewMainApp viewMainApp, Company company) {
 		
