@@ -25,6 +25,7 @@ import javax.swing.JTextField;
 
 import polytech.javaproject.model.Company;
 import polytech.javaproject.model.Department;
+import polytech.javaproject.model.Employee;
 
 public class ViewMainApp extends JFrame {
 
@@ -35,6 +36,9 @@ public class ViewMainApp extends JFrame {
 	private static final String FONT_NAME = "Dialog";
 	private static final int FONT_STYLE = Font.BOLD;
 	private static final int FONT_SIZE = 15;
+	private static final int CHECKING_TABLE_NB_COLUMN = 6;
+	private static final int DEPARTMENT_TABLE_NB_COLUMN = 3;
+	private static final int EMPLOYEE_TABLE_NB_COLUMN = 5;
 	private static final String[] HEADER_CHECKINGS_LIST_STRING = {"Employee First Name",
 														"Employee Last Name",
 														"arrived at",
@@ -42,7 +46,7 @@ public class ViewMainApp extends JFrame {
 														"Department",
 														"Date"};
 	private static final String[] HEADER_DEPARTMENT_LIST_STRING = {"Department", "Manager", "Nb Employees"};
-	private static final String[] HEADER_EMPLOYEE_LIST_STRING = {"Employee First Name", "Employee Last Name", "Department", "Overtime"};
+	private static final String[] HEADER_EMPLOYEE_LIST_STRING = {"ID", "Employee First Name", "Employee Last Name", "Department", "Overtime"};
 	private static final String LABEL_INCIDENT_OF_SCORES = "Incident of scores :";
 	private static final String LABEL_SHOW_ARRIVALS = "Show late arrivals";
 	private static final String LABEL_SHOW_LEAVINGS = "Show early leavings";
@@ -71,14 +75,19 @@ public class ViewMainApp extends JFrame {
 	private JPanel configurationPanel;
 	// ======= checking panel =========
 	private Object[][] checkingData;
+	private JTable checkingTable;
 	private JComboBox sortByDepartmentComboBox;
 	private DateTextField sortFromDateTextField;
 	private DateTextField sortToDateTextField;
 	// ======= employee panel =========
+	private Object[][] employeeData;
+	private JTable employeeTable;
 	private JButton newEmployeeButton;
 	private JButton modifyEmployeeButton;
 	private JButton deleteEmployeeButton;
 	// ======= department panel =======
+	private Object[][] departmentData;
+	private JTable departmentTable;
 	private JButton newDepartmentButton;
 	private JButton modifyDepartmentButton;
 	private JButton deleteDepartmentButton;
@@ -147,7 +156,9 @@ public class ViewMainApp extends JFrame {
 		
 		String[] header = HEADER_CHECKINGS_LIST_STRING;
 		
-		Object[][] tmpCheckingData = { 
+		//TODO tmpCheckingData URGENT
+		//*
+		Object[][] tmpCheckingData = {
 	              {"Johnathan", "Sykes", LocalTime.now(), LocalTime.now(), "TENNIS", LocalDate.now()},
 	              {"Nicolas", "Van de Kampf", LocalTime.now(), LocalTime.now(), "FOOTBALL", LocalDate.now()},
 	              {"Damien", "Cuthbert", LocalTime.now(), LocalTime.now(), "RIEN" , LocalDate.now()},
@@ -155,10 +166,20 @@ public class ViewMainApp extends JFrame {
 	              {"Emilie", "Schrödinger", LocalTime.now(), LocalTime.now(), "FOOTBALL" , LocalDate.now()},
 	              {"Delphine", "Duke", LocalTime.now(), LocalTime.now(), "TENNIS", LocalDate.now()},
 	              {"Eric", "Trump", LocalTime.now(), LocalTime.now(), "FOOTBALL" , LocalDate.now()},
-	    };
+	    };//*/
+		/*
+		checkingData = new Object [model.getEmployeeList().size()][CHECKING_TABLE_NB_COLUMN];
+		for (int i=0 ; i<model.getEmployeeList().size() ; i++) {
+			checkingData[i][0] = model.getEmployeeList().get(i).getFirstName();
+			checkingData[i][1] = model.getEmployeeList().get(i).getLastName();
+			checkingData[i][2] = model.getEmployeeList().get(i).get;
+			checkingData[i][3] = model.getEmployeeList()[i];
+			checkingData[i][4] = model.getEmployeeList()[i];
+		}
+		*/
 	 
-	    JTable checkingTable = new JTable(tmpCheckingData, header);
-	    JScrollPane scrollPane = new JScrollPane(checkingTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	    checkingTable = new JTable(tmpCheckingData, header);
+	    JScrollPane scrollPaneCheckings = new JScrollPane(checkingTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		
 	    JPanel sortByDatePanel = new JPanel();
 	    sortByDatePanel.setLayout(new GridLayout(3,5,10,10));
@@ -182,14 +203,29 @@ public class ViewMainApp extends JFrame {
 	    checkingPanel.add(new JLabel("   "), BorderLayout.WEST);
 		checkingPanel.add(new JLabel("   "), BorderLayout.NORTH);
 		checkingPanel.add(sortByDatePanel, BorderLayout.SOUTH);
-		checkingPanel.add(scrollPane, BorderLayout.CENTER);
+		checkingPanel.add(scrollPaneCheckings, BorderLayout.CENTER);
 		
 	}
 	
 	private void createEmployeePanel() {
-		//TODO employeePanel
 		employeePanel = new JPanel();
 		employeePanel.setLayout(new BorderLayout());
+		
+		String[] header = HEADER_EMPLOYEE_LIST_STRING;
+		employeeData = new Object [model.getEmployeeList().size()][EMPLOYEE_TABLE_NB_COLUMN];
+		for (int i=0 ; i<model.getEmployeeList().size() ; i++) {
+			Employee tmpEmployee = model.getEmployeeList().get(i);
+			employeeData[i][0] = tmpEmployee.getId();
+			employeeData[i][1] = tmpEmployee.getFirstName();
+			employeeData[i][2] = tmpEmployee.getLastName();
+			employeeData[i][3] = model.findDepartment(tmpEmployee);
+			employeeData[i][4] = tmpEmployee.getOvertime();
+		}
+		
+		employeeTable = new JTable(employeeData, header);
+		JScrollPane scrollPaneEmployee = new JScrollPane(employeeTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		employeePanel.add(scrollPaneEmployee);
+		
 		JPanel employeeButtonsPanel = new JPanel();
 		employeeButtonsPanel.setLayout(new GridLayout(5,1,10,10));
 		
@@ -204,12 +240,28 @@ public class ViewMainApp extends JFrame {
 		employeeButtonsPanel.add(new JLabel(""));
 		
 	    employeePanel.add(employeeButtonsPanel, BorderLayout.EAST);
+	    employeePanel.add(new JLabel("   "), BorderLayout.SOUTH);
+	    employeePanel.add(new JLabel("   "), BorderLayout.WEST);
+	    employeePanel.add(new JLabel("   "), BorderLayout.NORTH);
 	}
 	
 	private void createDepartmentPanel() {
-		//TODO departmentPanel
 		departmentPanel = new JPanel();
 		departmentPanel.setLayout(new BorderLayout());
+		
+		String[] header = HEADER_DEPARTMENT_LIST_STRING;
+		departmentData = new Object [model.getDepartmentList().size()][DEPARTMENT_TABLE_NB_COLUMN];
+		for (int i=0 ; i<model.getDepartmentList().size() ; i++) {
+			Department tmpDepartment = model.getDepartmentList().get(i);
+			departmentData[i][0] = tmpDepartment.toString();
+			departmentData[i][1] = tmpDepartment.getManager();
+			departmentData[i][2] = tmpDepartment.getEmployeeList().size();
+		}
+		
+		departmentTable = new JTable(departmentData, header);
+		JScrollPane scrollPaneDepartment = new JScrollPane(departmentTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		departmentPanel.add(scrollPaneDepartment);
+		
 		JPanel departmentButtonsPanel = new JPanel();
 		departmentButtonsPanel.setLayout(new GridLayout(5,1,10,10));
 		
@@ -224,6 +276,9 @@ public class ViewMainApp extends JFrame {
 		departmentButtonsPanel.add(new JLabel(""));
 		
 		departmentPanel.add(departmentButtonsPanel, BorderLayout.EAST);
+		departmentPanel.add(new JLabel("   "), BorderLayout.SOUTH);
+		departmentPanel.add(new JLabel("   "), BorderLayout.WEST);
+		departmentPanel.add(new JLabel("   "), BorderLayout.NORTH);
 		
 	}
 	
@@ -306,6 +361,10 @@ public class ViewMainApp extends JFrame {
 		
 		configurationPanel.add(secondaryPanel);
 		
+	}
+	
+	public void refresh() {
+		//TODO refresh
 	}
 	
 	public JButton getNewEmployeeButton() {
